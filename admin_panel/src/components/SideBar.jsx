@@ -10,7 +10,7 @@ const SideBar = () => {
     {
       title: "Dashboard",
       icon: <MdDashboard size={20} />,
-      path: "/dashboard",
+      path: "/",
     },
     {
       title: "Employee",

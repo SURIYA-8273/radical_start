@@ -4,10 +4,13 @@ import { FaCamera } from "react-icons/fa";
 import { IoPerson } from "react-icons/io5";
 import { IoChevronBack } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-
+import { toast } from "react-toastify";
+import axios from "axios";
 const CreateEmployeePage = () => {
 
   const [file, setFile] = useState(null);
+
+
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -29,6 +32,58 @@ const CreateEmployeePage = () => {
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async () => {
+
+    if (
+    !form.name ||
+    !form.employeeId ||
+    !form.department ||
+    !form.designation ||
+    !form.type ||
+    !form.status
+  ) {
+    toast.error("Please fill in all required fields.");
+    return;
+  }
+
+    const formData = new FormData();
+
+    formData.append("data", JSON.stringify(form));
+
+    if (file) {
+      formData.append("profile_image", file);
+    }
+
+    try {
+      const res = await axios.post("http://localhost:3000/api/employees", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (res.data.message == "Employee created successfully") {
+
+        toast.success("Employee created successfully")
+
+        setForm({
+          name: "",
+          employeeId: "",
+          department: "",
+          designation: "",
+          project: "",
+          type: "",
+          status: "",
+        })
+
+        navigate("/employee")
+
+      }
+
+    } catch (err) {
+      console.error("Error uploading employee:", err);
+    }
   };
 
   return (
@@ -154,9 +209,8 @@ const CreateEmployeePage = () => {
             className="w-full px-3 py-2 rounded-md border border-gray-300 outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Select Type</option>
-            <option value="Full-time">Full-time</option>
-            <option value="Part-time">Part-time</option>
-            <option value="Intern">Intern</option>
+            <option value="online">online</option>
+            <option value="offline">offline</option>
           </select>
         </div>
 
@@ -170,9 +224,8 @@ const CreateEmployeePage = () => {
             className="w-full px-3 py-2 rounded-md border border-gray-300 outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Select Status</option>
-            <option value="Active">Active</option>
-            <option value="On Leave">On Leave</option>
-            <option value="Inactive">Inactive</option>
+            <option value="temporary">temporary</option>
+            <option value="permanent">permanent</option>
           </select>
         </div>
       </div>
@@ -182,7 +235,7 @@ const CreateEmployeePage = () => {
         <button className="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200">
           Cancel
         </button>
-        <button className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">
+        <button onClick={() => handleSubmit()} className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">
           Confirm
         </button>
       </div>

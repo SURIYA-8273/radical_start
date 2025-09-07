@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { CiSearch } from "react-icons/ci";
 import { FaRegEye } from "react-icons/fa";
@@ -6,10 +6,15 @@ import { CiEdit } from "react-icons/ci";
 import { MdDeleteOutline } from "react-icons/md";
 import { useNavigate } from 'react-router-dom';
 import DeleteModal from '../../components/modals/DeleteModal';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const EmployeePage = () => {
 
     const navigate = useNavigate();
+
+      const [employees, setEmployees] = useState([]);
+  const [loading, setLoading] = useState(true);
 
     const tableHeader = [
         "Employee Name",
@@ -22,60 +27,107 @@ const EmployeePage = () => {
         "Action"
     ];
 
-    const employees = [
-        {
-            name: "John Doe",
-            id: "EMP001",
-            department: "Marketing",
-            designation: "Developer",
-            project: "Admin Panel",
-            type: "online",
-            status: "permanent",
-        },
-        {
-            name: "Jane Smith",
-            id: "EMP002",
-            department: "HR",
-            designation: "Developer",
-            project: "Recruitment Drive",
-            type: "online",
-            status: "permanent",
-        },
-        {
-            name: "Michael Johnson",
-            id: "EMP003",
-            department: "Marketing",
-            designation: "Developer",
-            project: "Budget Planning",
-            type: "online",
-            status: "permanent",
-        },
-        {
-            name: "Emily Brown",
-            id: "EMP004",
-            department: "Marketing",
-            designation: "Manager",
-            project: "Website Redesign",
-            type: "online",
-            status: "permanent",
-        },
-        {
-            name: "David Wilson",
-            id: "EMP005",
-            department: "HR",
-            designation: "Manager",
-            project: "Cloud Migration",
-            type: "online",
-            status: "permanent",
-        },
-    ];
+    // const employees = [
+    //     {
+    //         name: "John Doe",
+    //         id: "EMP001",
+    //         department: "Marketing",
+    //         designation: "Developer",
+    //         project: "Admin Panel",
+    //         type: "online",
+    //         status: "permanent",
+    //     },
+    //     {
+    //         name: "Jane Smith",
+    //         id: "EMP002",
+    //         department: "HR",
+    //         designation: "Developer",
+    //         project: "Recruitment Drive",
+    //         type: "online",
+    //         status: "permanent",
+    //     },
+    //     {
+    //         name: "Michael Johnson",
+    //         id: "EMP003",
+    //         department: "Marketing",
+    //         designation: "Developer",
+    //         project: "Budget Planning",
+    //         type: "online",
+    //         status: "permanent",
+    //     },
+    //     {
+    //         name: "Emily Brown",
+    //         id: "EMP004",
+    //         department: "Marketing",
+    //         designation: "Manager",
+    //         project: "Website Redesign",
+    //         type: "online",
+    //         status: "permanent",
+    //     },
+    //     {
+    //         name: "David Wilson",
+    //         id: "EMP005",
+    //         department: "HR",
+    //         designation: "Manager",
+    //         project: "Cloud Migration",
+    //         type: "online",
+    //         status: "permanent",
+    //     },
+    // ];
+
+     const fetchEmployees = async () => {
+    try {
+      const res = await axios.get("http://localhost:3000/api/employees");
+      if(res.data.message == "Employees retrieved successfully"){
+        setEmployees(res.data.data || []);
+      }
+      toast.success("Employees retrieved successfully")
+    } catch (err) {
+      console.error("❌ Error fetching employees:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
 
     const [isOpen, setIsOpen] = useState(false);
+    const [selectedId, setSelectedId] = useState(null);
 
-    const handleDelete = () => {
-        console.log("Item Deleted");
+    
+const handleSelectedId = (id)  =>{
+console.log(id)
+    setSelectedId(id);
+    setIsOpen(true)
+
+}
+    
+  const handleDelete = async (id) => {
+    try {
+      const res = await axios.delete(`http://localhost:3000/api/employees/${id}`
+      );
+
+      if (res.data.message == "Employee deleted successfully") {
+
+        toast.success("Employee deleted successfully")
+
         setIsOpen(false);
-    };
+
+        fetchEmployees();
+
+      }
+
+    } catch (err) {
+      console.error("Error uploading employee:", err);
+    }
+  };
+
+    if(loading){
+        return (<div>LOADING</div>
+        )
+    }
 
     return (
         <div className='w-full p-6'>
@@ -105,8 +157,8 @@ const EmployeePage = () => {
                     <thead className='border-b border-gray-300'>
                         <tr>
                             {
-                                tableHeader.map((data) => {
-                                    return <th className='font-normal text-[15px] text-left p-2 text-gray-500'>{data}</th>
+                                tableHeader.map((data,index) => {
+                                    return <th key={index} className='font-normal text-[15px] text-left p-2 text-gray-500'>{data}</th>
 
                                 })
                             }
@@ -127,15 +179,15 @@ const EmployeePage = () => {
                             ) :
 
                                 employees.map((data) => {
-                                    return <tr>
+                                    return <tr key={data.id}>
                                         <td className='p-2 text-[15px] text-gray-700 flex items-center gap-2'><div>
                                             <img src="/src/assets/profileImage.jpg" alt="" height={30} width={30} className='rounded-full' />
 
                                         </div>{data.name}</td>
-                                        <td className='p-2 text-[15px] text-gray-700'>{data.id}</td>
+                                        <td className='p-2 text-[15px] text-gray-700'>{data.employee_id}</td>
                                         <td className='p-2 text-[15px] text-gray-700'>{data.department}</td>
                                         <td className='p-2 text-[15px] text-gray-700'>{data.designation}</td>
-                                        <td className='p-2 text-[15px] text-gray-700'>{data.project}</td>
+                                        <td className='p-2 text-[15px] text-gray-700'>{data.project_name}</td>
                                         <td className='p-2 text-[15px] text-gray-700'>{data.type}</td>
                                         <td className='p-2 text-[15px] text-gray-700'>{data.status}</td>
                                         <td className='p-2 text-[15px] text-gray-700 flex gap-3'>
@@ -143,7 +195,7 @@ const EmployeePage = () => {
 
                                             <div className='hover:cursor-pointer'> <FaRegEye size={23} onClick={() => navigate("/employee/view", { state: { employeeData: data } })} /></div>
                                             <div className='hover:cursor-pointer'><CiEdit size={23} onClick={() => navigate("/employee/edit", { state: { employeeData: data } })} />
-                                            </div><div className='hover:cursor-pointer'> <MdDeleteOutline size={23} onClick={() => setIsOpen(true)} /></div>
+                                            </div><div className='hover:cursor-pointer'> <MdDeleteOutline size={23} onClick={() => handleSelectedId(data.id)} /></div>
                                         </td>
                                     </tr>
                                 })
@@ -153,7 +205,7 @@ const EmployeePage = () => {
                 </table>
             </div>
             {
-                isOpen && <DeleteModal isOpen={isOpen} handleDelete={handleDelete} setIsOpen={setIsOpen} />
+                isOpen && <DeleteModal isOpen={isOpen} handleDelete={()=>handleDelete(selectedId)} setIsOpen={setIsOpen} />
             }
         </div>
     )

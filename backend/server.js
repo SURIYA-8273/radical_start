@@ -1,9 +1,12 @@
 import express from "express";
 import employeeRoutes from "./routes/employeeRoutes.js";
 import { config } from "./config/config.js";
+import cors from 'cors';
 
 const app = express();
 app.use(express.json());
+
+app.use(cors({origin:"*"}))
 
 app.use("/api/employees", employeeRoutes);
 

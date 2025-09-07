@@ -3,7 +3,8 @@ import { FaCamera } from "react-icons/fa";
 import { IoPerson } from "react-icons/io5";
 import { IoChevronBack } from "react-icons/io5";
 import { useNavigate, useLocation } from "react-router-dom";
-
+import axios from "axios";
+import { toast } from "react-toastify";
 const EditEmployeePage = () => {
     const location = useLocation();
     const { employeeData } = location.state || {};
@@ -29,14 +30,13 @@ const EditEmployeePage = () => {
     });
 
     useEffect(() => {
-
         if (employeeData) {
             setForm({
                 name: employeeData.name || "",
-                employeeId: employeeData.id || "",
+                employeeId: employeeData.employee_id || "",
                 department: employeeData.department || "",
                 designation: employeeData.designation || "",
-                project: employeeData.project || "",
+                project: employeeData.project || employeeData.project_name || "",
                 type: employeeData.type || "",
                 status: employeeData.status || "",
             });
@@ -51,11 +51,56 @@ const EditEmployeePage = () => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
+    
+  const handleSubmit = async () => {
+
+    if (
+    !form.name ||
+    !form.employeeId ||
+    !form.department ||
+    !form.designation ||
+    !form.type ||
+    !form.status
+  ) {
+    toast.error("Please fill in all required fields.");
+    return;
+  }
+
+    const formData = new FormData();
+
+    formData.append("data", JSON.stringify(form));
+
+    if (file) {
+      formData.append("profile_image", file);
+    }
+
+    try {
+      const res = await axios.put(`http://localhost:3000/api/employees/${employeeData.id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (res.data.message == "Employee updated successfully") {
+
+        toast.success("Employee updated successfully")
+
+        
+
+        navigate("/employee")
+
+      }
+
+    } catch (err) {
+      console.error("Error uploading employee:", err);
+    }
+  };
+
     return (
         <div className="p-6 bg-white ">
 
             <div className="flex items-center gap-3 pb-4">
-                <div onClick={() => navigate(-1)}>
+                <div onClick={() => navigate(-1)} className="hover:cursor-pointer">
                     <IoChevronBack size={30} />
                 </div>
                 <h1 className='text-[27px] font-bold'>Edit Employee</h1>
@@ -190,6 +235,7 @@ const EditEmployeePage = () => {
                     >
                         <option value="">Select Status</option>
                         <option value="permanent">Permanent</option>
+                        <option value="temporary">Temporary</option>
 
                     </select>
                 </div>
@@ -197,10 +243,10 @@ const EditEmployeePage = () => {
 
 
             <div className="mt-8 flex justify-end gap-4">
-                <button className="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200">
+                <button onClick={()=>navigate(-1)} className="px-4 py-2 hover:cursor-pointer rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200">
                     Cancel
                 </button>
-                <button className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">
+                <button onClick={()=>handleSubmit()} className="px-4 py-2 hover:cursor-pointer rounded-lg bg-blue-600 text-white hover:bg-blue-700">
                     Confirm
                 </button>
             </div>

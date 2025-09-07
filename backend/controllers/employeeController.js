@@ -9,15 +9,20 @@ import {
 export const createEmployee = async (req, res) => {
   try {
     const data = JSON.parse(req.body.data);
-
+console.log(req.file)
     const employeeData = {
       ...data,
       profile_image: req.file ? req.file.path : null,
     };
 
     const id = await addEmployee(employeeData);
-    res.status(201).json({ message: "Employee created", id });
+    res.status(201).json({
+      status: true,
+      message: "Employee created successfully",
+      data: null,
+    });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -34,7 +39,7 @@ export const updateEmployee = async (req, res) => {
     const affectedRows = await editEmployee(req.params.id, employeeData);
 
     if (!affectedRows) return res.status(404).json({ message: "Not found" });
-    res.json({ message: "Employee updated" });
+    res.json({ message: "Employee updated successfully",success:true,data:null });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -43,7 +48,11 @@ export const updateEmployee = async (req, res) => {
 export const getAllEmployees = async (req, res) => {
   try {
     const employees = await findAllEmployees();
-    res.json(employees);
+    res.json({
+      status: true,
+      message: "Employees retrieved successfully",
+      data: employees,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -63,7 +72,7 @@ export const deleteEmployee = async (req, res) => {
   try {
     const affectedRows = await removeEmployee(req.params.id);
     if (!affectedRows) return res.status(404).json({ message: "Not found" });
-    res.json({ message: "Employee deleted" });
+    res.json({ message: "Employee deleted successfully",success:true,data:null });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

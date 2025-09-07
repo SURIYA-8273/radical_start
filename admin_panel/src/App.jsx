@@ -10,11 +10,13 @@ import EditEmployeePage from './pages/employees/EditEmployeePage'
 import ViewEmployeePage from './pages/employees/ViewEmployeePage'
 import CalenderPage from './pages/CalenderPage'
 import MessagesPage from './pages/MessagesPage'
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   return (
 
-    <Routes>
+   <> <Routes>
       <Route path='/login' element={<LoginPage />}></Route>
 
       <Route element={<ProtectedRoute />}>
@@ -22,7 +24,7 @@ const App = () => {
         <Route element={<AdminLayout />}>
 
           <Route
-            path="/dashboard"
+            path="/"
             element={<DashboardPage />} />
           <Route
             path="/employee"
@@ -39,7 +41,7 @@ const App = () => {
         </Route>
 
       </Route>
-    </Routes>
+    </Routes> <ToastContainer position="top-right" autoClose={3000} /></>
   )
 }
 

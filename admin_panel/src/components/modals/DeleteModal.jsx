@@ -14,13 +14,13 @@ const DeleteModal = ({ setIsOpen, handleDelete }) => {
                     <div className="flex gap-3">
                         <button
                             onClick={() => setIsOpen(false)}
-                            className="flex-1 py-2 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600"
+                            className="flex-1 hover:cursor-pointer py-2 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600"
                         >
                             Cancel
                         </button>
                         <button
                             onClick={handleDelete}
-                            className="flex-1 py-2 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600"
+                            className="flex-1 hover:cursor-pointer py-2 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600"
                         >
                             Yes
                         </button>

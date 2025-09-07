@@ -10,7 +10,7 @@ const ViewEmployeePage = () => {
         <div className="p-6 bg-white ">
 
             <div className="flex items-center gap-3 pb-4">
-                <div onClick={() => navigate(-1)}>
+                <div onClick={() => navigate(-1)} className="hover:cursor-pointer">
                     <IoChevronBack size={30} />
                 </div>
                 <h1 className='text-[27px] font-bold'>View Employee</h1>
@@ -45,7 +45,7 @@ const ViewEmployeePage = () => {
 
                 <div>
                     <p className="block text-sm font-medium mb-1">Employee ID*</p>
-                    <p>{employeeData.id}</p>
+                    <p>{employeeData.employee_id}</p>
                 </div>
 
 
@@ -63,7 +63,7 @@ const ViewEmployeePage = () => {
 
                 <div>
                     <p className="block text-sm font-medium mb-1">Project</p>
-                    <p>{employeeData.project}</p>
+                    <p>{employeeData.project ?? employeeData.project_name }</p>
                 </div>
                 <div>
                     <p className="block text-sm font-medium mb-1">Type*</p>
