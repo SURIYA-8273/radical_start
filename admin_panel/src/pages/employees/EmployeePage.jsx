@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import DeleteModal from '../../components/modals/DeleteModal';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { config } from '../../config/config';
 
 const EmployeePage = () => {
 
@@ -77,7 +78,7 @@ const EmployeePage = () => {
 
      const fetchEmployees = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/employees");
+      const res = await axios.get(`${config.BASE_URL}/api/employees`);
       if(res.data.message == "Employees retrieved successfully"){
         setEmployees(res.data.data || []);
       }
@@ -106,7 +107,7 @@ console.log(id)
     
   const handleDelete = async (id) => {
     try {
-      const res = await axios.delete(`http://localhost:3000/api/employees/${id}`
+      const res = await axios.delete(`${config.BASE_URL}/api/employees/${id}`
       );
 
       if (res.data.message == "Employee deleted successfully") {

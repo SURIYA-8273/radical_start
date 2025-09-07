@@ -6,6 +6,7 @@ import { IoChevronBack } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { config } from "../../config/config";
 const CreateEmployeePage = () => {
 
   const [file, setFile] = useState(null);
@@ -57,7 +58,7 @@ const CreateEmployeePage = () => {
     }
 
     try {
-      const res = await axios.post("http://localhost:3000/api/employees", formData, {
+      const res = await axios.post(`${config.BASE_URL}/api/employees`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

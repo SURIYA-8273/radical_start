@@ -5,6 +5,7 @@ import { IoChevronBack } from "react-icons/io5";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { config } from "../../config/config";
 const EditEmployeePage = () => {
     const location = useLocation();
     const { employeeData } = location.state || {};
@@ -75,7 +76,7 @@ const EditEmployeePage = () => {
     }
 
     try {
-      const res = await axios.put(`http://localhost:3000/api/employees/${employeeData.id}`, formData, {
+      const res = await axios.put(`${config.BASE_URL}/api/employees/${employeeData.id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
