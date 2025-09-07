@@ -6,3 +6,5 @@
 /backend/.env.development
 
 /backend/.env.production
+
+/admin_panel/node_modules
