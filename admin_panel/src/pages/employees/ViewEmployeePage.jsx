@@ -29,7 +29,7 @@ const ViewEmployeePage = () => {
                 >
 
                     <img
-                        src={""}
+                        src={employeeData.profile_image || "/src/assets/profileImage.jpg"}
                         alt="preview"
                         className="object-cover w-full h-full"
                     />
@@ -63,7 +63,7 @@ const ViewEmployeePage = () => {
 
                 <div>
                     <p className="block text-sm font-medium mb-1">Project</p>
-                    <p>{employeeData.project ?? employeeData.project_name }</p>
+                    <p>{employeeData.project ?? employeeData.project_name}</p>
                 </div>
                 <div>
                     <p className="block text-sm font-medium mb-1">Type*</p>

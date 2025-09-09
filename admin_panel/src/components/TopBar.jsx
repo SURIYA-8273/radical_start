@@ -14,7 +14,7 @@ const TopBar = () => {
             </div>
 
             <div>
-                <img src="/src/assets/profileImage.jpg" alt="" height={40} width={40} className='rounded-full' />
+                <img src="/src/assets/profileImage.jpg" alt="profile" height={40} width={40} className='rounded-full' />
             </div>
 
         </div>

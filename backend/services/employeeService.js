@@ -10,8 +10,8 @@ export const addEmployee = async (employeeData) => {
   return await insertEmployee(employeeData);
 };
 
-export const findAllEmployees = async () => {
-  return await getAllEmployees();
+export const findAllEmployees = async (search) => {
+  return await getAllEmployees(search);
 };
 
 export const findEmployeeById = async (id) => {

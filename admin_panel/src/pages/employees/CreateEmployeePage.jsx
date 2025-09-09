@@ -1,5 +1,5 @@
-
-import { useState } from "react";
+import { useState, CSSProperties } from "react";
+import { ClipLoader } from "react-spinners";
 import { FaCamera } from "react-icons/fa";
 import { IoPerson } from "react-icons/io5";
 import { IoChevronBack } from "react-icons/io5";
@@ -7,19 +7,27 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { config } from "../../config/config";
+
+const override = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "blue",
+};
+
 const CreateEmployeePage = () => {
+let [loading, setLoading] = useState(false);
+  
 
   const [file, setFile] = useState(null);
-
-
+  const [preview, setPreview] = useState(null);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
-      setFile(URL.createObjectURL(selectedFile));
+      setFile(selectedFile);
+      setPreview(URL.createObjectURL(selectedFile));
     }
   };
-
   const navigate = useNavigate();
   const [form, setForm] = useState({
     name: "",
@@ -36,18 +44,19 @@ const CreateEmployeePage = () => {
   };
 
   const handleSubmit = async () => {
+    setLoading(true)
 
     if (
-    !form.name ||
-    !form.employeeId ||
-    !form.department ||
-    !form.designation ||
-    !form.type ||
-    !form.status
-  ) {
-    toast.error("Please fill in all required fields.");
-    return;
-  }
+      !form.name ||
+      !form.employeeId ||
+      !form.department ||
+      !form.designation ||
+      !form.type ||
+      !form.status
+    ) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
 
     const formData = new FormData();
 
@@ -85,10 +94,24 @@ const CreateEmployeePage = () => {
     } catch (err) {
       console.error("Error uploading employee:", err);
     }
+    finally{
+      setLoading(false)
+    }
   };
 
   return (
-    <div className="p-6 bg-white ">
+    <div className="p-6 bg-white">
+
+
+     <div className="absolute  top-1/2 left-1/2">
+      <ClipLoader
+        color={"#ffffff"}
+        loading={loading}
+        cssOverride={override}
+        size={60}
+        aria-label="Loading Spinner"
+        data-testid="loader"
+      /></div>
 
       <div className="flex items-center gap-3 pb-4">
         <div onClick={() => navigate(-1)}>
@@ -108,9 +131,9 @@ const CreateEmployeePage = () => {
           htmlFor="fileInput"
           className="w-32 h-32 border border-gray-300 rounded-lg flex items-center justify-center cursor-pointer overflow-hidden"
         >
-          {file ? (
+          {preview ? (
             <img
-              src={file}
+              src={preview}
               alt="preview"
               className="object-cover w-full h-full"
             />
@@ -236,7 +259,7 @@ const CreateEmployeePage = () => {
         <button className="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200">
           Cancel
         </button>
-        <button onClick={() => handleSubmit()} className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">
+        <button disabled={loading} onClick={() => handleSubmit()} className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">
           Confirm
         </button>
       </div>

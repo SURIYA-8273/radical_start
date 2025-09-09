@@ -40,8 +40,16 @@ export const updateEmployee = async (id, employee) => {
   return result.affectedRows;
 };
 
-export const getAllEmployees = async () => {
-  const [rows] = await db.query(`SELECT * FROM ${config.tables.employees}`);
+export const getAllEmployees = async (search) => {
+  let query = "SELECT * FROM employees";
+  let values = [];
+
+  if (search) {
+    query += " WHERE employee_id LIKE ? OR name LIKE ?"; 
+    values.push(`%${search}%`, `%${search}%`);
+  }
+
+  const [rows] = await db.query(query, values);
   return rows;
 };
 

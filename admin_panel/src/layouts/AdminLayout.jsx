@@ -6,9 +6,11 @@ const AdminLayout = () => {
     return (
         <div className='flex w-full'>
             <SideBar />
-            <div className='w-full'>
+        
+            <div className='w-full '>
                 <TopBar />
-                <main className='w-full'>
+                
+                <main className='w-full '>
                     <Outlet />
                 </main>
             </div>

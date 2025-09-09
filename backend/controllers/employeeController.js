@@ -8,8 +8,10 @@ import {
 
 export const createEmployee = async (req, res) => {
   try {
+    console.log(req.body);
+
     const data = JSON.parse(req.body.data);
-console.log(req.file)
+    console.log(req.file);
     const employeeData = {
       ...data,
       profile_image: req.file ? req.file.path : null,
@@ -30,16 +32,23 @@ console.log(req.file)
 export const updateEmployee = async (req, res) => {
   try {
     const data = JSON.parse(req.body.data);
+    const employee = await findEmployeeById(data.id);
+    if (!employee)
+      return res.status(404).json({ message: "Employee not found" });
 
     const employeeData = {
       ...data,
-      profile_image: req.file ? req.file.path : null,
+      profile_image: req.file ? req.file.path : employee.profile_image,
     };
 
     const affectedRows = await editEmployee(req.params.id, employeeData);
 
     if (!affectedRows) return res.status(404).json({ message: "Not found" });
-    res.json({ message: "Employee updated successfully",success:true,data:null });
+    res.json({
+      message: "Employee updated successfully",
+      success: true,
+      data: null,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -47,7 +56,8 @@ export const updateEmployee = async (req, res) => {
 
 export const getAllEmployees = async (req, res) => {
   try {
-    const employees = await findAllEmployees();
+    const { search } = req.query;
+    const employees = await findAllEmployees(search);
     res.json({
       status: true,
       message: "Employees retrieved successfully",
@@ -72,7 +82,11 @@ export const deleteEmployee = async (req, res) => {
   try {
     const affectedRows = await removeEmployee(req.params.id);
     if (!affectedRows) return res.status(404).json({ message: "Not found" });
-    res.json({ message: "Employee deleted successfully",success:true,data:null });
+    res.json({
+      message: "Employee deleted successfully",
+      success: true,
+      data: null,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
