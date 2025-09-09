@@ -29,7 +29,7 @@ const ViewEmployeePage = () => {
                 >
 
                     <img
-                        src={employeeData.profile_image || "/src/assets/profileImage.jpg"}
+                        src={employeeData.profile_image || "/profileImage.jpg"}
                         alt="preview"
                         className="object-cover w-full h-full"
                     />

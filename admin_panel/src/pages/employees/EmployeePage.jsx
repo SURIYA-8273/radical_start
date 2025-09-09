@@ -62,7 +62,7 @@ const EmployeePage = () => {
             }
 
         } catch (err) {
-            console.error("Error fetching employees:", err);
+            toast.error("Failed to fetch employees. Please try again.");
         } finally {
             setLoading(false);
         }
@@ -90,9 +90,13 @@ const EmployeePage = () => {
                 fetchEmployees();
             }
         } catch (err) {
-            console.error("Error uploading employee:", err);
+            toast.error("Failed to delete employee. Please try again.");
         }
     };
+
+    const handleView = (employee) => navigate("/employee/view", { state: { employeeData: employee } });
+const handleEdit = (employee) => navigate("/employee/edit", { state: { employeeData: employee } });
+
 
 
 
@@ -135,7 +139,7 @@ const EmployeePage = () => {
                                     className="text-center p-6 text-gray-900 font-bold text-xl"
                                 >
                                     <ClipLoader
-                                        color={"#ffffff"}
+                                        color={"#2563eb"}
                                         loading={loading}
                                         cssOverride={override}
                                         size={60}
@@ -159,7 +163,7 @@ const EmployeePage = () => {
                                 employees.map((data) => {
                                     return <tr key={data.id}>
                                         <td className='p-2 text-[15px] text-gray-700 flex items-center gap-2'><div>
-                                            <img src={data.profile_image || "/src/assets/profileImage.jpg"} alt="" height={30} width={30} className='rounded-full' />
+                                            <img src={data.profile_image || "/profileImage.jpg"} alt={data.name} height={30} width={30} className='rounded-full' />
                                         </div>{data.name}</td>
                                         <td className='p-2 text-[15px] text-gray-700'>{data.employee_id}</td>
                                         <td className='p-2 text-[15px] text-gray-700'>{data.department}</td>
@@ -168,8 +172,8 @@ const EmployeePage = () => {
                                         <td className='p-2 text-[15px] text-gray-700'>{data.type}</td>
                                         <td className='p-2 text-[15px] text-gray-700'>{data.status}</td>
                                         <td className='p-2 text-[15px] text-gray-700 flex gap-3'>
-                                            <div className='hover:cursor-pointer'> <FaRegEye size={23} onClick={() => navigate("/employee/view", { state: { employeeData: data } })} /></div>
-                                            <div className='hover:cursor-pointer'><CiEdit size={23} onClick={() => navigate("/employee/edit", { state: { employeeData: data } })} />
+                                            <div className='hover:cursor-pointer'> <FaRegEye size={23} onClick={() => handleView(data)} /></div>
+                                            <div className='hover:cursor-pointer'><CiEdit size={23} onClick={() => handleEdit(data)} />
                                             </div><div className='hover:cursor-pointer'> <MdDeleteOutline size={23} onClick={() => handleSelectedId(data.id)} /></div>
                                         </td>
                                     </tr>
